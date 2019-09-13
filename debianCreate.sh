@@ -30,59 +30,35 @@ export DEBEMAIL DEBFULLNAME
 # Init
 
 declare tar_boll=${pack_name}-${version}.tar.gz  
-#declare -r temp_dir=$(mktemp -d)
 
 main() {
   create_tar_ball;
+
   echo "Tar ball created:"
   ls -h ${base_folder}/${pack_name}/${tar_boll}
 
   echo "Untar ball"
   tar -xzmf ${base_folder}/${pack_name}/${tar_boll} -C ${base_folder}/${pack_name}
   cd ${base_folder}/${pack_name}/${pack_name}-${version}
-# debmake -b':sh' -r ${revision}  -t -i debuild
 
-# Helps to build a Debian package from the upstream source
+  # debmake -b':sh' -r ${revision}  -t -i debuild
+  # Helps to build a Debian package from the upstream source
   debmake -b':sh' -r ${revision}  
 
-  
+  # Change the content from debmake
+  change_content;
 
-# Changelog
- sed -i -e 's/Initial release. Closes: #nnnn/Initial release./g'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
- sed -i -e '/is the bug number of your ITP/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
-# sed -i -e 's/UNRELEASED/unstable/'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
- 
+  # Create package
+  create_package;
 
-# Copyright
+  printf "List content in package\n"
+  dpkg -c ${base_folder}/${pack_name}/${pack_name}_${version}-1_all.deb
 
- cp -f "${DIR}"/templates/copyright "${base_folder}/${pack_name}/${pack_name}-${version}/debian/"
+}
 
-# README.Debian   
-  rm "${base_folder}/${pack_name}/${pack_name}-${version}/debian/README.Debian"
-
-# Rules 
-  sed -i -e'/You must remove/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/rules"
-  sed -i -e '/export DH_VERBOSE/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/rules"
-
-# Control file
-  sed -i -e 's/Homepage: <insert the upstream URL, if relevant>/Homepage: http:\/\/adtoox.com/g'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/control"
-  sed -i -e 's/Section: unknown/Section: devel/g'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/control"
-
-# Install file 
-  printf "scripts/${bash_file} usr/bin  " >  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/install"
-
-# Create man pages
-   printf   man/"${man_file_name}"  >  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/manpages"
-
-# Create package
-  
+create_package(){
   cd "${base_folder}/${pack_name}/${pack_name}-${version}"
   debuild
-
- printf "List content in package\n"
-dpkg -c ${base_folder}/${pack_name}/${pack_name}_${version}-1_all.deb
-
-
 }
 
 create_tar_ball() {
@@ -101,6 +77,36 @@ create_tar_ball() {
   cd ..
   tar -czf ${tar_boll} ${pack_name}-${version}
   rm -fr ${base_folder}/${pack_name}/${pack_name}-${version}
+}
+
+change_content() {
+  # Changelog
+  sed -i -e 's/Initial release. Closes: #nnnn/Initial release./g'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
+  sed -i -e '/is the bug number of your ITP/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
+  # sed -i -e 's/UNRELEASED/unstable/'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
+
+
+  # Copyright
+
+  cp -f "${DIR}"/templates/copyright "${base_folder}/${pack_name}/${pack_name}-${version}/debian/"
+
+  # README.Debian   
+  rm "${base_folder}/${pack_name}/${pack_name}-${version}/debian/README.Debian"
+
+  # Rules 
+  sed -i -e'/You must remove/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/rules"
+  sed -i -e '/export DH_VERBOSE/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/rules"
+
+  # Control file
+  sed -i -e 's/Homepage: <insert the upstream URL, if relevant>/Homepage: http:\/\/adtoox.com/g'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/control"
+  sed -i -e 's/Section: unknown/Section: devel/g'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/control"
+
+  # Install file 
+  printf "scripts/${bash_file} usr/bin  " >  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/install"
+
+  # Create man pages
+  printf   man/"${man_file_name}"  >  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/manpages"
+
 }
 
 main "$@"
