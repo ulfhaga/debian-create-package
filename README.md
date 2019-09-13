@@ -2,20 +2,20 @@
 
 ## Overview
 Bash script is used to create a Debian package from one shell script.
+The bash script is templates/my_test.
 
 ## How to do
 
-1.  Clone
+In file debianCreate.sh between comments "Changed here", there are som parameters to change.
+Run
 
-git clone <this remote>
+    ./debianCreate.sh
 
-2.  Get rid of the repository. 
+The result will bin in folder target. 
 
-rm -Rf .git 
+See this project as an example to create debian package by bash script.
 
-3. Put the your shell script in the folder source.
 
-4. Open file src/debianCreate.sh
 
 
 

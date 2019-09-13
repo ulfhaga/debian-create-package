@@ -9,7 +9,7 @@ declare -r SCRIPT=${0##*/}  || exit 201;  # SCRIPT is the name of this script
 declare -r CDIR=$(dirname "$0")
 declare -r DIR=$(pwd)
 
-# Setup
+# Change here...
 declare -r pack_name=my-test-sh
 declare -r version=1.0.0
 declare -r revision=1
@@ -18,7 +18,7 @@ declare -r man_file_name=my_test.1
 declare -r DEBEMAIL="myname@gmail.com"
 declare -r DEBFULLNAME="My Name"
 declare -r Homepage=http:\/\/mysite.com
-
+# ... stop change here.
 
 declare -r man_file=${DIR}/templates/"${man_file_name}"
 declare -r shell_file="${DIR}"/templates/"${bash_file}"
