@@ -34,7 +34,7 @@ declare tar_boll=${pack_name}-${version}.tar.gz
 main() {
   create_tar_ball;
 
-  printf_message "Tar ball created:"
+  printf_underline_message "Tar ball created:\n"
   ls -h ${base_folder}/${pack_name}/${tar_boll}
 
   echo "Untar ball"
@@ -51,7 +51,8 @@ main() {
   # Create package
   create_package;
 
-  printf_message "List content in package\n"
+  printf_underline_message "List content in package:\n"
+  printf_message "${base_folder}/${pack_name}/${pack_name}_${version}-1_all.deb\n"
   dpkg -c ${base_folder}/${pack_name}/${pack_name}_${version}-1_all.deb
 
 }
@@ -113,8 +114,15 @@ printf_message()
 {
   local NO_FORMAT="\033[0m"
   local C_BLUE="\033[38;5;12m"
+  printf "${C_BLUE}${1}${NO_FORMAT}"
+}
+
+printf_underline_message()
+{
+  local NO_FORMAT="\033[0m"
+  local C_BLUE="\033[38;5;12m"
   local F_UNDERLINED="\033[4m"
-  printf "\n${F_UNDERLINED}${C_BLUE}${1}${NO_FORMAT}\n"
+  printf "${F_UNDERLINED}${C_BLUE}${1}${NO_FORMAT}"
 }
 
 main "$@"
