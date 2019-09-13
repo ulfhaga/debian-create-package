@@ -34,7 +34,7 @@ declare tar_boll=${pack_name}-${version}.tar.gz
 main() {
   create_tar_ball;
 
-  echo "Tar ball created:"
+  printf_message "Tar ball created:"
   ls -h ${base_folder}/${pack_name}/${tar_boll}
 
   echo "Untar ball"
@@ -51,7 +51,7 @@ main() {
   # Create package
   create_package;
 
-  printf "List content in package\n"
+  printf_message "List content in package\n"
   dpkg -c ${base_folder}/${pack_name}/${pack_name}_${version}-1_all.deb
 
 }
@@ -107,6 +107,14 @@ change_content() {
   # Create man pages
   printf   man/"${man_file_name}"  >  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/manpages"
 
+}
+
+printf_message()
+{
+  local NO_FORMAT="\033[0m"
+  local C_BLUE="\033[38;5;12m"
+  local F_UNDERLINED="\033[4m"
+  printf "\n${F_UNDERLINED}${C_BLUE}${1}${NO_FORMAT}\n"
 }
 
 main "$@"
