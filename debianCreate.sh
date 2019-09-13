@@ -1,8 +1,5 @@
 #!/bin/bash
-
 # Create package for shell (No Makefile).
-# https://www.debian.org/doc/manuals/debmake-doc/ch08.en.html#nomakefile
-#set -x
 set -e
 
 declare -r SCRIPT=${0##*/}  || exit 201;  # SCRIPT is the name of this script
@@ -23,32 +20,28 @@ declare -r Homepage=http:\/\/mysite.com
 declare -r man_file=${DIR}/templates/"${man_file_name}"
 declare -r shell_file="${DIR}"/templates/"${bash_file}"
 declare -r base_folder="${DIR}"/target
+declare tar_boll=${pack_name}-${version}.tar.gz  
 export DEBEMAIL DEBFULLNAME
 
-
-
-# Init
-
-declare tar_boll=${pack_name}-${version}.tar.gz  
-
 main() {
+  printf_underline_message "Create tar ball"
   create_tar_ball;
 
-  printf_underline_message "Tar ball created:\n"
+  printf_message "Tar ball created:\n"
   ls -h ${base_folder}/${pack_name}/${tar_boll}
 
-  echo "Untar ball"
+  printf_message "Untar ball\n"
   tar -xzmf ${base_folder}/${pack_name}/${tar_boll} -C ${base_folder}/${pack_name}
   cd ${base_folder}/${pack_name}/${pack_name}-${version}
 
   # debmake -b':sh' -r ${revision}  -t -i debuild
-  # Helps to build a Debian package from the upstream source
+  printf_underline_message "Make a Debian source package\n"
   debmake -b':sh' -r ${revision}  
 
-  # Change the content from debmake
+  printf_underline_message "Change the content in source package\n"
   change_content;
 
-  # Create package
+  printf_underline_message "Build a Debian package\n"
   create_package;
 
   printf_underline_message "List content in package:\n"
@@ -86,9 +79,7 @@ change_content() {
   sed -i -e '/is the bug number of your ITP/d'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
   # sed -i -e 's/UNRELEASED/unstable/'  "${base_folder}/${pack_name}/${pack_name}-${version}/debian/changelog"
 
-
   # Copyright
-
   cp -f "${DIR}"/templates/copyright "${base_folder}/${pack_name}/${pack_name}-${version}/debian/"
 
   # README.Debian   
